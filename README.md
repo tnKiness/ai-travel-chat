@@ -8,6 +8,8 @@
 
 A Vietnam travel assistant for iOS, Android and the web. Answers stream in token by token while the assistant looks up places and live weather with **tool calls** — and you can watch each lookup happen.
 
+**[▶ Try the browser demo](https://tnkiness.github.io/ai-travel-chat/)** — the real UI and event stream, generated in your browser with live weather but no AI model (GitHub Pages has no server). Run it locally with an API key to chat with Claude.
+
 <img src="docs/screenshot.jpg" alt="Chat answering 'Plan 2 days in Hội An' with a place lookup" width="320" align="right" />
 
 - **Expo (React Native)** app — one codebase for iOS, Android and web
@@ -63,7 +65,7 @@ sequenceDiagram
 | Streaming on mobile | `expo/fetch` + `ReadableStream`; a shared SSE parser that survives chunks split anywhere, even mid-character | [sse.ts](shared/src/sse.ts), [api.ts](app/src/api.ts) |
 | Error messages | Typed SDK errors mapped to safe, user-facing messages with a `retryable` flag | `describeError` |
 
-**43 tests** cover the loop (refusals, truncation, retries, tool budgets, parallel results), the HTTP/SSE layer (streaming, busy conversations, client aborts, rate limits), the SSE parser (every split point) and the app's message state.
+**47 tests** cover the loop (refusals, truncation, retries, tool budgets, parallel results), the HTTP/SSE layer (streaming, busy conversations, client aborts, rate limits), the SSE parser (every split point), the app's message state and the browser demo.
 
 ## Tech stack
 
@@ -91,16 +93,17 @@ npm run check   # lint → typecheck → tests → build server + export web app
 ## Project layout
 
 ```text
-shared/   ChatEvent types + incremental SSE parser (built to JS, used by server and app)
+shared/   ChatEvent types, SSE parser, places data, weather client, demo wording (used by server and app)
 server/
   src/agent.ts          the agent loop
   src/model/            Claude (Anthropic SDK) and the scripted demo model
-  src/tools/            search_places, get_weather (+ curated data)
+  src/tools/            search_places, get_weather tool definitions + validation
   src/conversations.ts  append-only history store
   src/app.ts            HTTP + SSE endpoint
 app/
   App.tsx               chat screen
   src/useChat.ts        streaming state; src/chat-state.ts pure reducer (tested)
+  src/demo.ts           in-browser demo transport for the GitHub Pages build
   src/components/       message bubbles, tool chips, composer, tiny Markdown renderer
 ```
 

@@ -1,8 +1,6 @@
 import type Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
-import type { ToolName } from '@travel/shared';
-import { CITIES, findCity, type PlaceCategory } from './places-data.js';
-import { fetchForecast } from './weather.js';
+import { CITIES, fetchForecast, findCity, type PlaceCategory, type ToolName } from '@travel/shared';
 
 export interface ToolContext {
   signal: AbortSignal;
