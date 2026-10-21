@@ -1,4 +1,4 @@
-import type { City } from './places-data.js';
+import type { City } from './places.js';
 
 export interface DailyForecast {
   date: string;
@@ -44,7 +44,9 @@ export async function fetchForecast(
     forecast_days: String(days),
   }).toString();
 
-  const res = await ctx.fetch(url, { signal: AbortSignal.any([ctx.signal, AbortSignal.timeout(5000)]) });
+  // Call fetch unbound: browsers throw "Illegal invocation" when it runs with `this === ctx`.
+  const fetchImpl = ctx.fetch;
+  const res = await fetchImpl(url, { signal: AbortSignal.any([ctx.signal, AbortSignal.timeout(5000)]) });
   if (!res.ok) throw new Error(`Open-Meteo responded ${res.status}`);
   const { daily } = (await res.json()) as OpenMeteoDaily;
   if (!daily) throw new Error('Open-Meteo response had no daily data');
