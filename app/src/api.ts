@@ -1,6 +1,7 @@
 import { fetch } from 'expo/fetch';
 import { Platform } from 'react-native';
 import { SseParser, type ChatEvent, type ChatRequest } from '@travel/shared';
+import { DEMO_MODE, streamDemoChat } from './demo';
 
 /**
  * Where the API runs. Set EXPO_PUBLIC_API_URL for a phone on the LAN or a deployed server.
@@ -21,6 +22,7 @@ export async function streamChat(
   onEvent: (event: ChatEvent) => void,
   signal: AbortSignal,
 ): Promise<void> {
+  if (DEMO_MODE) return streamDemoChat(request, onEvent, signal);
   const res = await fetch(`${API_URL}/api/chat`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'text/event-stream' },

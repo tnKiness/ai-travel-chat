@@ -85,10 +85,17 @@ export const CITIES: City[] = [
   },
 ];
 
-const strip = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/đ/gi, 'd').toLowerCase().trim();
+/** Lower-cases and removes Vietnamese diacritics so 'Hội An', 'hoi an' and 'HOI AN' compare equal. */
+export const foldText = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase().trim();
 
 /** Finds a city by id, name or alias, ignoring case and Vietnamese diacritics. */
 export function findCity(query: string): City | undefined {
-  const q = strip(query).replace(/[-_]/g, ' ');
-  return CITIES.find((c) => [c.id.replace(/-/g, ' '), c.name, ...c.aliases].some((n) => strip(n) === q));
+  const q = foldText(query).replace(/[-_]/g, ' ');
+  return CITIES.find((c) => [c.id.replace(/-/g, ' '), c.name, ...c.aliases].some((n) => foldText(n) === q));
+}
+
+/** Finds the first supported city mentioned anywhere in free text. */
+export function findCityInText(text: string): City | undefined {
+  const q = foldText(text);
+  return CITIES.find((c) => [c.name, ...c.aliases].some((n) => q.includes(foldText(n))));
 }

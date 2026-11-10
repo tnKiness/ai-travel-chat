@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ConversationBusyError, ConversationNotFoundError, ConversationStore } from '../src/conversations.js';
 import { RateLimiter } from '../src/rate-limit.js';
-import { findCity } from '../src/tools/places-data.js';
+import { findCity } from '@travel/shared';
 import { executeTool } from '../src/tools/index.js';
 import { weatherFetch } from './helpers.js';
 

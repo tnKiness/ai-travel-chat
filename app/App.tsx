@@ -4,6 +4,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Composer } from './src/components/Composer';
 import { MessageBubble } from './src/components/MessageBubble';
+import { DEMO_MODE } from './src/demo';
 import { colors } from './src/theme';
 import { useChat } from './src/useChat';
 
@@ -25,7 +26,10 @@ function ChatScreen() {
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Vietnam Travel Chat</Text>
+        <View>
+          <Text style={styles.title}>Vietnam Travel Chat</Text>
+          {DEMO_MODE && <Text style={styles.badge}>Browser demo · no AI model</Text>}
+        </View>
         {messages.length > 0 && (
           <Pressable onPress={reset} accessibilityRole="button" hitSlop={8}>
             <Text style={styles.link}>New chat</Text>
@@ -71,6 +75,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: colors.border,
   },
   title: { fontSize: 17, fontWeight: '700', color: colors.text },
+  badge: { fontSize: 12, color: colors.muted, marginTop: 2 },
   link: { color: colors.accent, fontWeight: '600' },
   list: { padding: 16, paddingBottom: 24, flexGrow: 1, maxWidth: 760, width: '100%', alignSelf: 'center' },
   empty: { flex: 1, justifyContent: 'center', gap: 10 },
